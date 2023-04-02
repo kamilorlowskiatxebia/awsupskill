@@ -9,12 +9,10 @@ namespace Upskill.AwsApi.Controllers
     public class ImagesController : ControllerBase
     {
         private readonly ILogger<ImagesController> _logger;
-        private readonly IImageFilter _filter;
 
-        public ImagesController(ILogger<ImagesController> logger, IImageFilter filter)
+        public ImagesController(ILogger<ImagesController> logger)
         {
             _logger = logger;
-            _filter = filter;
         }
 
         [HttpGet("hello")]
@@ -24,10 +22,15 @@ namespace Upskill.AwsApi.Controllers
         }
 
         [HttpPost("filter/greyscale")]
-        public ApiImage Process()
+        public ApiImage Process(IFormFile imageFile)
         {
+            using var readStream = imageFile.OpenReadStream();
+            using var memoryStream = new MemoryStream();
             
-            throw new NotImplementedException();
+            readStream.CopyTo(memoryStream);
+            var rawData = memoryStream.ToArray();
+
+            return new ApiImage();
         }
     }
 }
